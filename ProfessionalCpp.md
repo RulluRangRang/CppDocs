@@ -72,7 +72,7 @@ bool b { true };
     - 단, 컴파일러 버전/빌드 옵션/모듈로 옮겨지면 바로 깨질 수 있으므로, 명시적으로 #include <limits>를 써주는 것이 좋다. 
     - 동일하게 std::format도 #include <format>을 써주는 것이 좋다. 
 
-# 2025.08.29 p73 ~ p
+# 2025.08.29 p73 ~ p.93
 
 ## 0 초기자
     - 유니폼 초기자에서 { 0 } 0을 생략해도 자동으로 0으로 초기화됨.
@@ -223,4 +223,55 @@ int main(){
 int func(int param1, [[maybe_unused]] int param2){
     return 42;
 }
+```
+
+# 2025.08.29 p93 ~ p.93
+
+## 어트리뷰트
+
+```cpp
+// [[noreturn]] 어트리뷰트는 함수 내에 반환 경로가 없는 부분의 경고를 없애준다.
+[[noreturn]] void forceProgramTermination(){
+    std::exit(1);       // <cstdlib> 정의됨
+}
+
+bool isDongleAvailable(){
+    bool isAvailbable { false };
+    return isAvailable;
+}
+
+bool isFeatureLicenced(int featureId){
+    if(!isDongleAvailable()){
+        // 사용 가능한 라이선싱 동글이 없다면 프로그램을 중단한다.
+        forceProgramTermination();
+    } else {
+        bool isLicensed { featureId == 42};
+        // 동글이 있다면 주어진 기능에 대한 라이선스 검사를 한다.
+        return isLicensed;
+    }
+}
+
+int main(){
+    bool isLicensed { isFeatureLicensed(42) };
+}
+
+
+// [[deprecated]]
+// 현재 사용할 수 있지만, 추후에 지원 중단됨을 알리는 데 사용
+[[deprecated("Unsafe method, please use xyz")]] void func();
+
+
+// [[likely]], [[unlikely]]
+// 컴파일러가 최적화 작업을 수행하는 데 도움을 줄 수 있다.
+// 단, 사용할 경우는 드물지만, 성능에 민감한 경우 직접 지정해서 사용
+```
+
+## C 스타일 배열(p.96)
+
+```cpp
+int myArray[3] = {0};   // 0으로 전부 초기화
+int myArray[3] = {};    // 0으로 전부 초기화
+int myArray[3] {};      // 0으로 전부 초기화
+
+int myArray[3] { 2 };   // 첫 번째만 2, 나머지는 0으로 초기화
 ```
